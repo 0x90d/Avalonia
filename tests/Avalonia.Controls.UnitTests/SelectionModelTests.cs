@@ -1192,14 +1192,13 @@ namespace Avalonia.Controls.UnitTests
         }
 
         [Fact]
-        public void Removing_Unselected_Item_Raises_SelectionChanged()
+        public void Removing_Unselected_Item_Before_Selected_Item_Raises_SelectionChanged()
         {
             var target = new SelectionModel();
             var data = new ObservableCollection<int>(Enumerable.Range(0, 10));
             var raised = 0;
 
             target.Source = data;
-            target.Select(4);
             target.Select(8);
 
             target.SelectionChanged += (s, e) =>
@@ -1212,6 +1211,23 @@ namespace Avalonia.Controls.UnitTests
             data.Remove(6);
 
             Assert.Equal(1, raised);
+        }
+
+        [Fact]
+        public void Removing_Unselected_Item_After_Selected_Item_Doesnt_Raise_SelectionChanged()
+        {
+            var target = new SelectionModel();
+            var data = new ObservableCollection<int>(Enumerable.Range(0, 10));
+            var raised = 0;
+
+            target.Source = data;
+            target.Select(4);
+
+            target.SelectionChanged += (s, e) => ++raised;
+
+            data.Remove(6);
+
+            Assert.Equal(0, raised);
         }
 
         private void Select(SelectionModel manager, int index, bool select)
