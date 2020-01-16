@@ -1508,19 +1508,29 @@ namespace Avalonia.Controls.UnitTests
 
         public static ObservableCollection<object> CreateNestedData(int levels = 3, int groupsAtLevel = 5, int countAtLeaf = 10)
         {
+            var nextData = 0;
+            return CreateNestedData(levels, groupsAtLevel, countAtLeaf, ref nextData);
+        }
+
+        public static ObservableCollection<object> CreateNestedData(
+            int levels,
+            int groupsAtLevel,
+            int countAtLeaf,
+            ref int nextData)
+        {
             var data = new ObservableCollection<object>();
             if (levels != 0)
             {
                 for (int i = 0; i < groupsAtLevel; i++)
                 {
-                    data.Add(CreateNestedData(levels - 1, groupsAtLevel, countAtLeaf));
+                    data.Add(CreateNestedData(levels - 1, groupsAtLevel, countAtLeaf, ref nextData));
                 }
             }
             else
             {
                 for (int i = 0; i < countAtLeaf; i++)
                 {
-                    data.Add(_nextData++);
+                    data.Add(nextData++);
                 }
             }
 
@@ -1532,7 +1542,6 @@ namespace Avalonia.Controls.UnitTests
             return IndexPath.CreateFromIndices(path);
         }
 
-        private static int _nextData = 0;
         private struct TreeWalkNodeInfo
         {
             public object Current { get; set; }
